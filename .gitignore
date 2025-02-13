@@ -1,0 +1,6 @@
+db.sqlite3
+myenv # 가상환경 이름
+migrations
+.DS_Store
+*.pyc
+__pycache__/
