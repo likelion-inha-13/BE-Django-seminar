@@ -20,5 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls), 
     path('util/', include('util.urls')), # 'util/' 로 시작하는 URL은 util/urls.py 파일에서 설정을 가져옴.
-    # include 함수를 사용하여 다른 urls.py 파일의 URL 설정을 포함시킵니다.
+    path('lion/', include('lionapp.urls'))
 ]
