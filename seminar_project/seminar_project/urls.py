@@ -14,9 +14,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
+from django.contrib import admin  
+from django.urls import path    
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
+from util import views        # util 앱의 views.py 파일에서 뷰 함수들을 import
+
+urlpatterns = [                # URL 패턴 목록을 담는 변수
+    path('admin/', admin.site.urls), # 'admin/' URL로 시작하는 요청은 Django 관리자 페이지로 연결
+    path('health/', views.health),  # 'health/' URL로 시작하는 요청은 util 앱의 views.py 파일에 있는 health 함수로 연결
 ]
