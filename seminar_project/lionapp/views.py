@@ -48,22 +48,36 @@ def get_posts_all(request):
         return JsonResponse({'posts': data}, status=200) 
     return JsonResponse({'message': 'GET 요청만 허용됩니다.'}) 
 
-def update_post(request, pk): 
-    if request.method == 'POST': 
-        post = get_object_or_404(Post, pk=pk) 
-        data = json.loads(request.body) 
 
-        post.title = data.get('title') # 요청 데이터에서 title 값 추출하여 Post 객체 title 필드 업데이트
-        post.content = data.get('content') #요청 데이터에서 content 값 추출하여 Post 객체 content 필드 업데이트
-        post.save() # post.save() 로 수정 내용 저장
+def update_post(request, pk):
+    if request.method == 'POST':  
+        post = get_object_or_404(Post, pk=pk)  # Post 모델에서 pk에 해당하는 객체를 가져옴, 없으면 404 오류 발생
+        data = json.loads(request.body)  
 
-        data = { # 수정 성공 응답 데이터
-            'post': { # 수정된 게시글 정보
-                'id': post.id,
-                '제목': post.title,
-                '내용': post.content
+        if 'title' in data:  # 요청 데이터에 'title' 내용이 있는지 확인
+            post.title = data['title']  # Post 객체의 'title' 필드를 요청 데이터의 값으로 업데이트
+        if 'content' in data:  # 요청 데이터에 'content' 내용이 있는지 확인
+            post.content = data['content']  # Post 객체의 'content' 필드를 요청 데이터의 값으로 업데이트
+
+        post.save()  # 변경된 Post 객체를 데이터베이스에 저장
+
+        data = {  # 수정 성공 시 응답으로 보낼 데이터를 딕셔너리 형태로 구성
+            'post': {  # 수정된 게시글 정보
+                'id': post.id,  
+                '제목': post.title, 
+                '내용': post.content, 
             },
-            'message': f'id: {pk}번 게시글 수정 성공'
+            'message': f'id: {pk}번 게시글 수정 성공' 
         }
-        return JsonResponse(data, status=200) 
-    return JsonResponse({'message': 'POST 요청만 허용됩니다.'}, status=400) 
+        return JsonResponse(data, status=200)  
+    return JsonResponse({'message': 'POST 요청만 허용됩니다.'}, status=400)  
+
+def delete_post(request, pk):
+    if request.method == 'DELETE':
+        post = get_object_or_404(Post, pk=pk)
+        post.delete()
+        data = {
+            "message" : f"id: {pk} 포스트 삭제 완료"
+        }
+        return JsonResponse(data, status=200)
+    return JsonResponse({'message':'DELETE 요청만 허용됩니다.'})
