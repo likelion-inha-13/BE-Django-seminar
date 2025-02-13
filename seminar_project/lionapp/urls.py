@@ -4,5 +4,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('create/',views.create_post)
+    path('create/',views.create_post),
+    path('get/<int:pk>/',views.get_post)
 ]
