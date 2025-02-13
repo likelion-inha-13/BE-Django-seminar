@@ -21,5 +21,5 @@ from util import views        # util 앱의 views.py 파일에서 뷰 함수들�
 
 urlpatterns = [                # URL 패턴 목록을 담는 변수
     path('admin/', admin.site.urls), # 'admin/' URL로 시작하는 요청은 Django 관리자 페이지로 연결
-    path('health/', views.health),  # 'health/' URL로 시작하는 요청은 util 앱의 views.py 파일에 있는 health 함수로 연결
+    path('util/health/', views.health),  # 'util/health/' URL 요청은 util 앱의 views.py 파일에 있는 health 함수로 연결
 ]
