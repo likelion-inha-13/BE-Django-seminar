@@ -29,8 +29,7 @@ def get_post(request, pk):  # 특정 Post 객체를 조회하는 함수
 			'메시지': '조회 성공'  
 		}
 		return JsonResponse(data, status=200) 
-	else:  
-		return JsonResponse({'message':'GET 요청만 허용됩니다.'})  # 에러 메시지를 JSON 형식으로 응답
+	return JsonResponse({'message':'GET 요청만 허용됩니다.'})  # 에러 메시지를 JSON 형식으로 응답
 	
 
 
@@ -47,5 +46,24 @@ def get_posts_all(request):
                 '메시지': '조회 성공' # "메시지" 필드 추가
             })
         return JsonResponse({'posts': data}, status=200) 
-    else: 
-        return JsonResponse({'message': 'GET 요청만 허용됩니다.'}) 
+    return JsonResponse({'message': 'GET 요청만 허용됩니다.'}) 
+
+def update_post(request, pk): 
+    if request.method == 'POST': 
+        post = get_object_or_404(Post, pk=pk) 
+        data = json.loads(request.body) 
+
+        post.title = data.get('title') # 요청 데이터에서 title 값 추출하여 Post 객체 title 필드 업데이트
+        post.content = data.get('content') #요청 데이터에서 content 값 추출하여 Post 객체 content 필드 업데이트
+        post.save() # post.save() 로 수정 내용 저장
+
+        data = { # 수정 성공 응답 데이터
+            'post': { # 수정된 게시글 정보
+                'id': post.id,
+                '제목': post.title,
+                '내용': post.content
+            },
+            'message': f'id: {pk}번 게시글 수정 성공'
+        }
+        return JsonResponse(data, status=200) 
+    return JsonResponse({'message': 'POST 요청만 허용됩니다.'}, status=400) 
