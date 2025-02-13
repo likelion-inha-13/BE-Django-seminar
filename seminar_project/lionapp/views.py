@@ -31,3 +31,21 @@ def get_post(request, pk):  # 특정 Post 객체를 조회하는 함수
 		return JsonResponse(data, status=200) 
 	else:  
 		return JsonResponse({'message':'GET 요청만 허용됩니다.'})  # 에러 메시지를 JSON 형식으로 응답
+	
+
+
+def get_posts_all(request): 
+    if request.method == 'GET': # GET 요청으로만 동작하도록 제한
+        posts = Post.objects.all()  # all() 메서드로 모든 Post 객체 조회 
+        data = []  # 응답으로 보낼 데이터를 담을 리스트 초기화
+
+        for post in posts: # 각 Post 객체 정보 추출
+            data.append({ # 추출된 정보 ->  data 리스트에 추가
+                'id': post.id,
+                '제목': post.title, 
+                '내용': post.content,
+                '메시지': '조회 성공' # "메시지" 필드 추가
+            })
+        return JsonResponse({'posts': data}, status=200) 
+    else: 
+        return JsonResponse({'message': 'GET 요청만 허용됩니다.'}) 
