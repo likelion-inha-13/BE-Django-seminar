@@ -33,7 +33,7 @@ def get_post(request, pk):  # 특정 Post 객체를 조회하는 함수
 	
 
 
-def get_posts_all(request): 
+def get_post_all(request): 
     if request.method == 'GET': # GET 요청으로만 동작하도록 제한
         posts = Post.objects.all()  # all() 메서드로 모든 Post 객체 조회 
         data = []  # 응답으로 보낼 데이터를 담을 리스트 초기화
