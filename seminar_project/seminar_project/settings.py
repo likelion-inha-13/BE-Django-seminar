@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
     'lionapp',
     # third app
     'rest_framework',
+    'rest_freamework_simplejwt',
     # Basic App
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,10 +47,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.common.CommonMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware', 
     # 이 미들웨어는 장고가 풀스택으로 사용될 때 csrf 공격을 막기 위해 csrf token을 발급하기 위한 미들웨어입니다!
@@ -60,6 +62,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'seminar_project.urls'
+# 프로젝트의 최상위 URL 설정 파일을 지정합니다. 
+# (따라서 url은 seminar_project의 urls.py 파일을 항상 먼저 보는 것입니다!)
 
 TEMPLATES = [
     {
@@ -76,6 +80,7 @@ TEMPLATES = [
         },
     },
 ]
+# admin 페이지를 구성할 때 필요합니다!
 
 WSGI_APPLICATION = 'seminar_project.wsgi.application'
 
@@ -89,6 +94,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# 데이터베이스 연결 설정으로, 현재는 SQLite를 사용하고 있습니다.
 
 
 # Password validation
@@ -97,17 +103,43 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
+    },# 사용자의 아이디와 유사한 비밀번호를 허용하지 않음
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
+    },# 비밀번호가 설정된 길이 보다 짧지 않도록 검사
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
+    },# 널리 사용되는 암호 목록과 일치하는 비밀번호를 거부합니다. 널리 사용되는 암호를 피하고 보안을 강화합니다. (이거 찾아보면 금지해놓은 재밌는 암호들이 많았던 것으로 기억합니다...ㅋㅋ)
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    },# 비밀번호에 숫자가 포함되어 있는지 확인하여, 숫자를 사용하도록 유도합니다.
 ]
+# 비밀번호 유효성 검사기 설정으로, 사용자 비밀번호의 강도를 제어합니다.
+
+
+AUTH_USER_MODEL = 'users.User' # 커스텀 유저를 장고에서 사용하기 위함
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # 인증된 요청인지 확인
+        #'rest_framework.permissions.AllowAny',  # 누구나 접근 가능 
+				# (기본적으로 누구나 접근 가능하게 설정하고, 인증된 요청인지 확인하는 api를 따로 지정하게 하려면 
+				# 이 옵션을 위의 옵션 대신 켜주어도 됩니다!)
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT를 통한 인증방식 사용
+    ),
+}
+
+REST_USE_JWT = True
+
+SIMPLE_JWT = {
+    'SIGNING_KEY': 'hellolikelionhellolikelion',
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
 
 
 # Internationalization
