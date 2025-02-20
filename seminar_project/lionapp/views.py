@@ -3,20 +3,24 @@ from django.http import JsonResponse
 from .models import *  
 from django.shortcuts import get_object_or_404
 
-def create_post(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
 
-        title = data.get('title')
-        content = data.get('content')
 
-        post = Post(
-            title = title,
-            content = content
-        )
-        post.save()
-        return JsonResponse({'message':'success'})
-    return JsonResponse({'message':'POST 요청만 허용됩니다.'})
+@api_view(['POST'])
+def create_post(request): # drf 기능 추가된 함수
+    title = request.data.get('title')  # request.body 대신 request.data 사용
+    content = request.data.get('content')
+
+    if not title or not content:
+        return Response({'message': '제목과 내용을 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    post = Post.objects.create(title=title, content=content)
+    
+    return Response({'message': 'success'}, status=status.HTTP_201_CREATED)
+    # JsonResponse 대신 Response 사용
+
 
 
 def get_post(request, pk):  # 특정 Post 객체를 조회하는 함수
