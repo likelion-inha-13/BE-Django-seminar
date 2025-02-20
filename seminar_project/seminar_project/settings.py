@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     # my app
     'util',
     'lionapp',
+    'users',
     # third app
     'rest_framework',
     'rest_framework_simplejwt',
