@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from .serializers import PostSerializer
 
 
 @api_view(['POST'])
@@ -20,6 +21,18 @@ def create_post(request): # drf 기능 추가된 함수
     
     return Response({'message': 'success'}, status=status.HTTP_201_CREATED)
     # JsonResponse 대신 Response 사용
+
+
+@api_view(['POST'])
+def create_post_v2(request):
+    serializer = PostSerializer(data=request.data) # JSON → Python 객체 변환 (역직렬화)
+    
+    if serializer.is_valid():  # 데이터 유효성 검사
+        post = serializer.save()  # DB 저장
+        message = f"id: {post.pk}번 포스트 생성 성공"
+        return Response({'message': message, 'post': serializer.data}, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # 유효성 검사 실패 시 오류 반환
 
 
 
