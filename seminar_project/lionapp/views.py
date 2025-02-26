@@ -77,3 +77,60 @@ def click_hearts(request, pk):
         return JsonResponse(response_data, status=200)
     else:
         return JsonResponse({'message': 'Post 요청만 허용 됩니다.'}, status=400)
+    
+
+def leader(request,pk): #필터 버전
+    if request.method == 'POST':
+        member = get_object_or_404(Member, pk=pk)
+
+        if member.is_leader:
+            # 대표 자격 박탈
+            member.is_leader = False
+            member.save()
+            message = f"'{member.name}' 님의 대표 자격을 박탈 하였습니다."
+            return JsonResponse({'message': message}, status=200)
+        else:
+            # 대표 임명 시 기존 대표 확인 및 처리 (대표는 1명만 가능)
+            existing_leader = Member.objects.filter(is_leader=True).exists()
+            if existing_leader:
+                return JsonResponse({'message': '대표는 2명 이상일 수 없습니다.'}, status=400)
+            else:
+                # 대표 임명
+                member.is_leader = True
+                member.save()
+                message = f"'{member.name}' 님을 대표로 임명 하였습니다."
+                return JsonResponse({'message': message}, status=200)
+
+    else:
+        return JsonResponse({'message': 'POST 요청만 허용됩니다.'}, status=400)
+    
+def leader_v2(request, pk): # 필터 안쓰는 버전
+    if request.method == 'POST':
+        member = get_object_or_404(Member, pk=pk)
+
+        if member.is_leader:
+            # 대표 자격 박탈 (
+            member.is_leader = False
+            member.save()
+            message = f"'{member.name}' 님의 대표 자격을 박탈 하였습니다."
+            return JsonResponse({'message': message}, status=200)
+        else:
+            # 대표 임명 시 기존 대표 확인 
+            members = Member.objects.all() # 모든 Member 객체 가져오기!
+            leader_exists = False # 대표 존재 여부 변수
+            for existing_member in members: # for 루프로 순회
+                if existing_member.is_leader:
+                    leader_exists = True # 대표가 존재하면 변수 True 로 변경
+                    break # 대표를 찾았으면 루프 종료
+
+            if leader_exists:
+                return JsonResponse({'message': '대표는 2명 이상일 수 없습니다.'}, status=400)
+            else:
+                # 대표 임명 (기존 로직 동일)
+                member.is_leader = True
+                member.save()
+                message = f"'{member.name}' 님을 대표로 임명 하였습니다."
+                return JsonResponse({'message': message}, status=200)
+
+    else:
+        return JsonResponse({'message': 'POST 요청만 허용됩니다.'}, status=400)
