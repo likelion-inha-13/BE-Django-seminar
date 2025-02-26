@@ -58,3 +58,22 @@ def change_password(request, pk):
             return JsonResponse({'message': '비밀번호를 입력해주세요'}, status=400)
     else:
         return JsonResponse({'message': 'Post 요청만 허용 됩니다.'}, status=400)
+    
+def click_hearts(request, pk):
+    if request.method == 'POST':
+        member = get_object_or_404(Member, pk=pk)
+        member.hearts += 1
+        member.save()
+
+        data = {
+            'id': member.id,
+            'name': member.name,
+            'hearts': member.hearts
+        }
+        response_data = {
+            'message': f"'{member.name}' 님에게 하트를 1개 눌렀습니다.", # f-string을 사용하여 member.name 포함
+            'data': data
+        }
+        return JsonResponse(response_data, status=200)
+    else:
+        return JsonResponse({'message': 'Post 요청만 허용 됩니다.'}, status=400)
