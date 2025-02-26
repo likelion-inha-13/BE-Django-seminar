@@ -36,3 +36,25 @@ def get_members(request,pk):
         return JsonResponse(data, status=200)
     else:
         return JsonResponse({'message': 'GET 요청만 허용 됩니다.'}, status=400)
+
+def change_password(request, pk):
+    if request.method == 'POST':
+        member = get_object_or_404(Member, pk=pk)
+        member_data = json.loads(request.body)
+
+        if 'password' in member_data:
+            member.password = member_data['password']
+            member.save()
+
+            data = {
+                'password': member.password
+            }
+            response_data = { # 딕셔너리 형태로 response_data 생성
+            'message': '비밀번호 변경 성공', # message 추가!
+            'data': data, # 기존 data 도 포함
+            }
+            return JsonResponse(response_data, status=200)
+        else:
+            return JsonResponse({'message': '비밀번호를 입력해주세요'}, status=400)
+    else:
+        return JsonResponse({'message': 'Post 요청만 허용 됩니다.'}, status=400)

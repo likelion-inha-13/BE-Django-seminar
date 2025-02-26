@@ -7,4 +7,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),   
     path('members/create/', views.create_member),
     path('members/get/<int:pk>/', views.get_members),
+    path('members/change_password/<int:pk>/', views.change_password)
 ]
