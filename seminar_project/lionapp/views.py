@@ -134,3 +134,20 @@ def leader_v2(request, pk): # 필터 안쓰는 버전
 
     else:
         return JsonResponse({'message': 'POST 요청만 허용됩니다.'}, status=400)
+    
+def get_all_members(request):
+    if request.method == 'GET':
+        members = Member.objects.all()
+        data = []
+
+        for member in members:
+            data.append({
+                'id': member.id,
+                'name': member.name,
+                'email': member.email,
+                'is_leader': member.is_leader,
+                'hearts': member.hearts
+            })
+        return JsonResponse({'posts': data}, status=200) 
+    else:
+        return JsonResponse({'message': 'GET 요청만 허용 됩니다.'}, status=400)
