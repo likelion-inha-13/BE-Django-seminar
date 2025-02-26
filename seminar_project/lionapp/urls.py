@@ -5,5 +5,6 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),   
-    path('members/create/', views.create_member)
+    path('members/create/', views.create_member),
+    path('members/get/<int:pk>/', views.get_members),
 ]
