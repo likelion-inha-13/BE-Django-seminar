@@ -151,3 +151,11 @@ def get_all_members(request):
         return JsonResponse({'posts': data}, status=200) 
     else:
         return JsonResponse({'message': 'GET 요청만 허용 됩니다.'}, status=400)
+    
+def delete_member(request, pk):
+    if request.method == 'DELETE':
+        member = get_object_or_404(Member, pk=pk)
+        member.delete()
+        return JsonResponse({'message': f'id: {pk} Member deleted successfully!'} ) # f-string 기능 O status=200)
+    else:
+        return JsonResponse({'message': 'DELETE 요청만 허용 됩니다.'}, status=400)

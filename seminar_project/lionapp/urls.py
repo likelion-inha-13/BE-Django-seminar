@@ -11,5 +11,6 @@ urlpatterns = [
     path('members/click_hearts/<int:pk>/', views.click_hearts),
     path('members/leader/<int:pk>/', views.leader),
     path('members/leader/<int:pk>/', views.leader_v2),
-    path('members/get_all/', views.get_all_members)
+    path('members/get_all/', views.get_all_members),
+    path('members/delete/<int:pk>/', views.delete_member),
 ]
