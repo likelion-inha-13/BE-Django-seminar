@@ -101,26 +101,17 @@ def delete_post(request, pk):
     return JsonResponse({'message':'DELETE 요청만 허용됩니다.'})
 
 
-def api_response(data, message, status): # 공통응답 함수
-    response = {
-        "message":message,
-        "data":data
-    }
-    return Response(response, status=status)
-
-
-
 class PostApiView(APIView) : # CBV로 get_post, delete_post 리팩토링
     def get(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
 
         postSerializer = PostSerializer(post) # Python -> JSON 변환 (직렬화)
         message = f"id: {post.pk}번 포스트 조회 성공"
-        return api_response(data = postSerializer.data, message = message, status = status.HTTP_200_OK)
+        return Response({'message': message, 'post': postSerializer.data}, status=status.HTTP__200_OK)
     
     def delete(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
         post.delete()
         
         message = f"id: {pk}번 포스트 삭제 성공"
-        return api_response(message = message, status = status.HTTP_200_OK) # 204여도 될 것 같아요
+        return Response({'message': message}, status=status.HTTP_200_OK)
