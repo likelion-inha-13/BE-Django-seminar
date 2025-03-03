@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model() # 현재 사용 주인 User 모델 가져옴
-        fields = ('id', 'email', 'password', 'name')
+        fields = ('id', 'user_id', 'email', 'password', 'name', 'generation', 'gender')
 
 
 # 패스워드가 필요없는 다른 테이블에서 사용할 용도
@@ -18,4 +18,4 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('id', 'email', 'name')
+        fields = ('id', 'user_id', 'email', 'name', 'generation', 'gender')
