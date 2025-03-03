@@ -38,7 +38,7 @@ class User(AbstractBaseUser): # AbstractBaseUser를 상속하여 User 모델 커
         max_length=30,
         unique=True, # 아이디는 고유해야 함
     )
-    
+
     email = models.EmailField(
         verbose_name='email',
         max_length=100,
@@ -64,7 +64,7 @@ class User(AbstractBaseUser): # AbstractBaseUser를 상속하여 User 모델 커
     REQUIRED_FIELDS = ['email', 'name', 'generation', 'gender'] # 'createsuperuser' 실행 시 입력해야 할 필드
 
     def __str__(self):
-        return self.email
+        return self.user_id
 
     def has_perm(self, perm, obj=None):
         return True # 모든 권한 허용 (추후 수정 가능)
