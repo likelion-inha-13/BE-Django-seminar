@@ -1,5 +1,5 @@
 db.sqlite3
-myenv
+seminar_env
 migrations
 .DS_Store
 *.pyc
