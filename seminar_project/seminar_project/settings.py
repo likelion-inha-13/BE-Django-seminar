@@ -65,7 +65,7 @@ MIDDLEWARE = [
 ]
 
 # CORS
-CORS_ALLOW_METHODS = [  # 허용할 옵션
+CORS_ALLOW_METHODS = [  # 허용할 HTTP 요청 메서드 (CORS 정책에서 허용할 메서드 지정)
     'DELETE',
     'GET',
     'OPTIONS',
@@ -74,7 +74,7 @@ CORS_ALLOW_METHODS = [  # 허용할 옵션
     'PUT',
 ]
 
-CORS_ALLOW_HEADERS = [  # 허용할 헤더
+CORS_ALLOW_HEADERS = [ # 클라이언트가 서버로 요청 시 사용할 수 있는 HTTP 헤더 목록
     'accept',
     'accept-encoding',
     'authorization',
@@ -86,9 +86,9 @@ CORS_ALLOW_HEADERS = [  # 허용할 헤더
     'x-requested-with',
 ]
 
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True # 쿠키 및 인증 정보를 포함한 요청을 허용 (인증이 필요한 요청 가능
 
-CORS_ALLOW_ALL_ORIGINS: True
+CORS_ALLOW_ALL_ORIGINS: True # 모든 출처(도메인)에서의 요청을 허용 (보안상 주의 필요)
 
 
 ROOT_URLCONF = 'seminar_project.urls'
