@@ -3,8 +3,7 @@ from .models import Post
 
 class PostSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
-    title = serializers.CharField(max_length=100)
-    content = serializers.CharField()
+    # content = serializers.CharField(max_length=350)
 
     class Meta:
         model = Post

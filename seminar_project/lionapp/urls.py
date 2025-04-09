@@ -10,5 +10,6 @@ urlpatterns = [
     path('update/<int:pk>/',views.update_post),
     path('delete/<int:pk>/',views.delete_post),
     path('v2/post',views.create_post_v2), # FBV
-    path('v2/post/<int:pk>',views.PostApiView.as_view()) # CBV
+    path('v2/post/<int:pk>',views.PostApiView.as_view()), # CBV
+    path('v2/post/all',views.PostApiView.as_view()) # 전체조회
 ]

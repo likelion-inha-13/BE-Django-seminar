@@ -16,11 +16,11 @@ def create_post(request): # drf 기능 추가된 함수
     content = request.data.get('content')
 
     if not title or not content:
-        return Response({'message': '제목과 내용을 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': '제목과 내용을 입력해주세요.'}, status=400)
 
     post = Post.objects.create(title=title, content=content)
     
-    return Response({'message': 'success'}, status=status.HTTP_201_CREATED)
+    return Response({'message': 'success'}, status=201)
     # JsonResponse 대신 Response 사용
 
 
@@ -31,9 +31,9 @@ def create_post_v2(request):
     if serializer.is_valid():  # 데이터 유효성 검사
         post = serializer.save()  # DB 저장
         message = f"id: {post.pk}번 포스트 생성 성공"
-        return Response({'message': message, 'post': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'message': message, 'post': serializer.data}, status=201)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # 유효성 검사 실패 시 오류 반환
+    return Response(serializer.errors, status=400)  # 유효성 검사 실패 시 오류 반환
 
 
 
@@ -102,19 +102,24 @@ def delete_post(request, pk):
 
 
 class PostApiView(APIView) : # CBV로 get_post, delete_post 리팩토링
-    def get(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+    def get(self, request, pk=None):
+        if pk: # 특정 pk 조회
+            post = get_object_or_404(Post, pk=pk)
 
-        postSerializer = PostSerializer(post) # Python -> JSON 변환 (직렬화)
-        message = f"id: {post.pk}번 포스트 조회 성공"
-        return Response({'message': message, 'post': postSerializer.data}, status=status.HTTP__200_OK)
+            postSerializer = PostSerializer(post) # Python -> JSON 변환 (직렬화)
+            message = f"id: {post.pk}번 포스트 조회 성공"
+            return Response({'message': message, 'post': postSerializer.data}, status=status.HTTP_200_OK)
+        
+        posts = Post.objects.all() # 전체 조회
+        postSerializer = PostSerializer(posts, many=True)
+        return Response({'posts': postSerializer.data}, status=200)
     
     def delete(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
         post.delete()
         
         message = f"id: {pk}번 포스트 삭제 성공"
-        return Response({'message': message}, status=status.HTTP_200_OK)
+        return Response({'message': message}, status=200)
 
     def patch(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
@@ -123,8 +128,8 @@ class PostApiView(APIView) : # CBV로 get_post, delete_post 리팩토링
         if serializer.is_valid():
             serializer.save()
             message = f"id: {pk}번 포스트 업데이트 성공"
-            return Response({'message': message, 'post': serializer.data}, status=status.HTTP_200_OK)
+            return Response({'message': message, 'post': serializer.data}, status=200)
         
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=400)
 
 
