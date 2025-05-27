@@ -5,3 +5,4 @@ migrations
 *.pyc
 __pycache__/
 chanbro 
+#secrets.json # 이런식으로 추가~
