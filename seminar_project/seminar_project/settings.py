@@ -12,16 +12,29 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import json
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+secret_file = BASE_DIR / 'secrets.json'
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets_dict=secrets):
+    try:
+        return secrets_dict[setting]
+    except KeyError:
+        raise ImproperlyConfigured(f"Set the {setting} environment variable.")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7$-+72mam6aebj5t)(qudd-+hl_&js8d=@m_l52li87&alvn5n'
+SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -88,7 +101,7 @@ CORS_ALLOW_HEADERS = [ # 클라이언트가 서버로 요청 시 사용할 수 �
 
 CORS_ALLOW_CREDENTIALS = True # 쿠키 및 인증 정보를 포함한 요청을 허용 (인증이 필요한 요청 가능
 
-CORS_ALLOW_ALL_ORIGINS: True # 모든 출처(도메인)에서의 요청을 허용 (보안상 주의 필요)
+CORS_ALLOW_ALL_ORIGINS= True # 모든 출처(도메인)에서의 요청을 허용 (보안상 주의 필요)
 
 
 ROOT_URLCONF = 'seminar_project.urls'
@@ -164,7 +177,7 @@ REST_FRAMEWORK = {
 REST_USE_JWT = True
 
 SIMPLE_JWT = {
-    'SIGNING_KEY': 'hellolikelionhellolikelion',
+    'SIGNING_KEY': get_secret("SIGNING_KEY"),
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': False,
